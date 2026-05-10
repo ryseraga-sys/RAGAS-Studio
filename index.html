@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAGAS Studio – Cotton Kurtis</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#f7f2ea;min-height:100vh}
+.header{background:linear-gradient(160deg,#1a1208 0%,#3b2a0e 100%);text-align:center;padding:1.4rem 1rem 1.1rem;position:relative}
+.header img.logo{max-width:260px;width:75%;height:auto;display:block;margin:0 auto}
+.admin-gear{position:absolute;top:12px;right:14px;background:none;border:none;font-size:22px;cursor:pointer;opacity:0.45;transition:opacity 0.2s}
+.admin-gear:hover{opacity:1}
+.admin-banner{display:none;background:linear-gradient(90deg,#1a4fa0,#0d2d6b);color:#fff;text-align:center;padding:7px;font-size:12px;letter-spacing:1px}
+.admin-banner.show{display:block}
+.toolbar{display:flex;gap:7px;padding:0.75rem 1rem;flex-wrap:wrap;align-items:center;background:#fff;border-bottom:1px solid #e8dcc8;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.filter-label{font-size:11px;color:#888;letter-spacing:1px;text-transform:uppercase;margin-right:3px;white-space:nowrap}
+.filter-btn{font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 12px;border:1px solid #d4b896;border-radius:20px;background:transparent;cursor:pointer;color:#7a5a30;transition:all 0.2s;white-space:nowrap}
+.filter-btn.active,.filter-btn:hover{background:#b8860b;color:#fff;border-color:#b8860b}
+.sg-btn{margin-left:auto;font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 13px;border:1px solid #b8860b;border-radius:20px;background:transparent;cursor:pointer;color:#b8860b;transition:all 0.2s;white-space:nowrap}
+.sg-btn:hover{background:#b8860b;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:14px;padding:1.1rem}
+.card{background:#fff;border:1px solid #e8dcc8;border-radius:12px;overflow:hidden;position:relative;transition:transform 0.18s,box-shadow 0.18s}
+.card:not(.is-sold):not(.is-booked):hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(184,134,11,0.15)}
+.card-img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;background:#f0e8d8}
+.status-overlay{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.is-sold .status-overlay{background:rgba(20,12,4,0.52)}
+.is-booked .status-overlay{background:rgba(20,60,120,0.45)}
+.status-badge{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;letter-spacing:3px;padding:7px 18px;border-radius:4px;transform:rotate(-10deg);box-shadow:0 3px 12px rgba(0,0,0,0.45)}
+.badge-sold{background:#b91c1c;color:#fff}
+.badge-booked{background:#1a4fa0;color:#fff}
+.card-body{padding:9px 11px 12px}
+.card-name{font-size:11.5px;color:#7a5a30;font-weight:500;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-price{font-family:'Playfair Display',serif;font-size:19px;color:#b8860b;font-weight:600;line-height:1.1}
+.card-size{font-size:10.5px;color:#aaa;margin:2px 0 7px}
+.add-btn{width:100%;padding:6px;font-size:11.5px;border:none;border-radius:6px;background:#b8860b;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:0.5px;transition:background 0.2s}
+.add-btn:hover{background:#9a7009}
+.add-btn:disabled{background:#d4c4b0;color:#a09080;cursor:default}
+.admin-card-btns{display:none;gap:4px;margin-top:6px}
+.admin-mode .admin-card-btns{display:flex}
+.acb{flex:1;padding:5px 2px;font-size:10px;border:none;border-radius:5px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;transition:all 0.2s}
+.acb-sold{background:#fde8e8;color:#b91c1c;border:1px solid #f5c6c6}
+.acb-sold:hover,.acb-sold.active-status{background:#b91c1c;color:#fff}
+.acb-booked{background:#e8eef8;color:#1a4fa0;border:1px solid #b8caf0}
+.acb-booked:hover,.acb-booked.active-status{background:#1a4fa0;color:#fff}
+.acb-avail{background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7}
+.acb-avail:hover{background:#2e7d32;color:#fff}
+.cart-bar{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,#1a1208,#3b2a0e);color:#f5e6c8;padding:11px 1.2rem;display:none;align-items:center;justify-content:space-between;z-index:100;border-top:1px solid rgba(200,164,90,0.3)}
+.cart-bar-info{font-size:12px;color:#c8a45a}
+.cart-bar-info span{font-family:'Playfair Display',serif;font-size:15px;color:#f5e6c8}
+.cart-open-btn{font-size:11.5px;padding:7px 18px;border:1px solid #c8a45a;border-radius:20px;background:transparent;color:#c8a45a;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.cart-open-btn:hover{background:#c8a45a;color:#1a1208}
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:1rem;overflow-y:auto}
+.modal-backdrop.open{display:flex}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:500px;margin:auto;padding:1.5rem;position:relative}
+.modal-title{font-family:'Playfair Display',serif;font-size:20px;margin-bottom:1rem;color:#2a1a08}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:24px;cursor:pointer;color:#999;line-height:1}
+.form-group{margin-bottom:11px}
+.form-group label{display:block;font-size:12px;color:#7a5a30;margin-bottom:3px;font-weight:500}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:8px 10px;border:1px solid #e0d0b8;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;color:#2a1a08;background:#faf6ef;outline:none;transition:border-color 0.2s}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:#b8860b}
+.form-group textarea{height:68px;resize:none}
+.primary-btn{width:100%;margin-top:10px;padding:12px;background:#b8860b;color:#fff;border:none;border-radius:8px;font-size:13.5px;font-family:'DM Sans',sans-serif;cursor:pointer;letter-spacing:0.5px;transition:background 0.2s}
+.primary-btn:hover{background:#9a7009}
+.back-btn{background:none;border:none;color:#b8860b;font-size:12.5px;cursor:pointer;padding:0;margin-bottom:10px;display:flex;align-items:center;gap:4px;font-family:'DM Sans',sans-serif}
+.cart-item{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f0e8d8;gap:8px}
+.cart-item-name{font-size:13px;font-weight:500;color:#2a1a08}
+.cart-item-meta{font-size:11px;color:#999;margin-top:1px}
+.cart-item-price{font-size:13.5px;color:#b8860b;font-weight:500;white-space:nowrap}
+.remove-btn{background:none;border:none;color:#c0392b;cursor:pointer;font-size:20px;padding:0 2px;line-height:1}
+.cart-total-row{display:flex;justify-content:space-between;padding:11px 0 0;font-size:14.5px;font-weight:500}
+.size-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+.size-table th{background:#f7f0e4;color:#7a5a30;padding:8px 12px;text-align:left;font-weight:500;border-bottom:2px solid #e8dcc8}
+.size-table td{padding:8px 12px;border-bottom:1px solid #f0e8d8;color:#2a1a08}
+.size-table tr:last-child td{border:none}
+.success-box{text-align:center;padding:2rem 1rem}
+.success-icon{font-size:46px;margin-bottom:1rem}
+.success-box h3{font-family:'Playfair Display',serif;font-size:21px;margin-bottom:8px;color:#2a1a08}
+.success-box p{font-size:13px;color:#888;line-height:1.6}
+.wa-btn{display:inline-block;margin-top:1.1rem;padding:10px 26px;background:#25d366;color:#fff;border-radius:22px;font-size:13px;text-decoration:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500}
+.count-badge{background:#c8a45a;color:#1a1208;font-size:9.5px;font-weight:700;border-radius:50%;width:17px;height:17px;display:inline-flex;align-items:center;justify-content:center;margin-left:5px;vertical-align:middle}
+.empty-msg{text-align:center;padding:2.5rem 1rem;color:#a08060;font-size:14px}
+.page-bottom{height:80px}
+.order-summary{background:#faf6ef;border-radius:8px;padding:9px 11px;margin-bottom:12px;font-size:13px;color:#7a5a30}
+.admin-panel-section{background:#f0f4ff;border:1px solid #b8caf0;border-radius:10px;padding:14px;margin-bottom:14px}
+.admin-panel-section h4{font-size:13px;color:#1a4fa0;margin-bottom:10px;font-weight:600;letter-spacing:0.5px}
+.tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.tag{font-size:10px;padding:3px 9px;border-radius:10px;font-weight:500}
+.tag-avail{background:#e8f5e9;color:#2e7d32}
+.tag-sold{background:#fde8e8;color:#b91c1c}
+.tag-booked{background:#e8eef8;color:#1a4fa0}
+.img-preview{width:80px;height:100px;object-fit:cover;border-radius:6px;border:1px solid #e0d0b8;margin-top:6px;display:none}
+</style>
+</head>
+<body>
+
+<div id="admin-banner" class="admin-banner">🔐 Admin Mode — Mark items Sold / Booked or Add new products</div>
+
+<div class="header">
+  <img src="images/logo.png" alt="RAGAS Studio" class="logo">
+  <button class="admin-gear" onclick="openModal('admin-login')" title="Admin Login">⚙️</button>
+</div>
+
+<div class="toolbar">
+  <span class="filter-label">Filter:</span>
+  <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+  <button class="filter-btn" onclick="setFilter('available',this)">Available</button>
+  <button class="filter-btn" onclick="setFilter('booked',this)">Booked</button>
+  <button class="filter-btn" onclick="setFilter('sold',this)">Sold</button>
+  <button class="filter-btn" onclick="setFilter('550',this)">₹550</button>
+  <button class="filter-btn" onclick="setFilter('750',this)">₹750</button>
+  <button class="filter-btn" onclick="setFilter('850',this)">₹850</button>
+  <button class="filter-btn" onclick="setFilter('900',this)">₹900</button>
+  <button class="filter-btn" onclick="setFilter('950',this)">₹950</button>
+  <button class="sg-btn" onclick="openModal('size')">📐 Size Guide</button>
+</div>
+
+<div class="grid" id="product-grid"></div>
+<div class="page-bottom"></div>
+
+<div class="cart-bar" id="cart-bar">
+  <div>
+    <div class="cart-bar-info">🛒 <span id="cart-count">0</span> items</div>
+    <div class="cart-bar-info">Total: <span id="cart-total-bar">₹0</span></div>
+  </div>
+  <button class="cart-open-btn" onclick="openModal('cart')">View Cart →</button>
+</div>
+
+<div class="modal-backdrop" id="modal-backdrop" onclick="backdropClick(event)">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<script>
+const INITIAL_PRODUCTS = [
+  {id:1,  name:"Amber Buddha Bliss",       img:"images/amber_buddha.jpg",        size:"L",   price:550,  status:"available"},
+  {id:2,  name:"Amber Buddha Bliss",       img:"images/amber_buddha.jpg",        size:"M",   price:550,  status:"available"},
+  {id:3,  name:"Silver Zari Kolam",        img:"images/ash_kolam.jpg",           size:"S",   price:950,  status:"available"},
+  {id:4,  name:"Silver Zari Kolam",        img:"images/ash_kolam.jpg",           size:"M",   price:950,  status:"available"},
+  {id:5,  name:"Silver Zari Kolam",        img:"images/ash_kolam.jpg",           size:"XL",  price:950,  status:"available"},
+  {id:6,  name:"Midnight Rose Kolam",      img:"images/black_kolam.jpg",         size:"XL",  price:950,  status:"available"},
+  {id:7,  name:"Navy Ajrakh Bloom",        img:"images/blue_ajraq.jpg",          size:"M",   price:900,  status:"available"},
+  {id:8,  name:"Navy Ajrakh Bloom",        img:"images/blue_ajraq.jpg",          size:"M",   price:900,  status:"available"},
+  {id:9,  name:"Royal Blue Elephant",      img:"images/blue_elephant.jpg",       size:"S",   price:550,  status:"available"},
+  {id:10, name:"Royal Blue Elephant",      img:"images/blue_elephant.jpg",       size:"L",   price:550,  status:"available"},
+  {id:11, name:"Royal Blue Elephant",      img:"images/blue_elephant.jpg",       size:"XL",  price:550,  status:"available"},
+  {id:12, name:"Peacock Lime Duet",        img:"images/blue_peacock.jpg",        size:"M",   price:900,  status:"available"},
+  {id:13, name:"Peacock Lime Duet",        img:"images/blue_peacock.jpg",        size:"M",   price:900,  status:"available"},
+  {id:14, name:"Peacock Lime Duet",        img:"images/blue_peacock.jpg",        size:"L",   price:900,  status:"available"},
+  {id:15, name:"Mocha Mirror Bloom",       img:"images/brown_kolam.jpg",         size:"S",   price:950,  status:"sold"},
+  {id:16, name:"Mocha Mirror Bloom",       img:"images/brown_kolam.jpg",         size:"XL",  price:950,  status:"sold"},
+  {id:17, name:"Mocha Mirror Bloom",       img:"images/brown_kolam.jpg",         size:"L",   price:950,  status:"sold"},
+  {id:18, name:"Mocha Mirror Bloom",       img:"images/brown_kolam.jpg",         size:"L",   price:950,  status:"available"},
+  {id:19, name:"Cream Elephant Parade",    img:"images/cream_elephant.jpg",      size:"M",   price:550,  status:"sold"},
+  {id:20, name:"Cream Elephant Parade",    img:"images/cream_elephant.jpg",      size:"S",   price:550,  status:"sold"},
+  {id:21, name:"Cream Elephant Parade",    img:"images/cream_elephant.jpg",      size:"S",   price:550,  status:"available"},
+  {id:22, name:"Tangerine Ajrakh",         img:"images/orange_ajraq.jpg",        size:"S",   price:900,  status:"available"},
+  {id:23, name:"Parrot Green Diva",        img:"images/green_purple.jpg",        size:"M",   price:900,  status:"available"},
+  {id:24, name:"Fuchsia Navy Bloom",       img:"images/purple_darkblue.jpg",     size:"L",   price:900,  status:"available"},
+  {id:25, name:"Fuchsia Navy Bloom",       img:"images/purple_darkblue.jpg",     size:"M",   price:900,  status:"available"},
+  {id:26, name:"Fuchsia Navy Bloom",       img:"images/purple_darkblue.jpg",     size:"S",   price:900,  status:"sold"},
+  {id:27, name:"Teal Gold Dots",           img:"images/ramar_blue.jpg",          size:"L",   price:950,  status:"available"},
+  {id:28, name:"Crimson Buddha",           img:"images/red_buddha.jpg",          size:"S",   price:550,  status:"available"},
+  {id:29, name:"Cream Navy Elephant",      img:"images/white_blue_elephant.jpg", size:"L",   price:750,  status:"sold"},
+  {id:30, name:"Cream Navy Elephant",      img:"images/white_blue_elephant.jpg", size:"L",   price:750,  status:"available"},
+  {id:31, name:"Cream Navy Elephant",      img:"images/white_blue_elephant.jpg", size:"XL",  price:750,  status:"available"},
+  {id:32, name:"Cream Navy Elephant",      img:"images/white_blue_elephant.jpg", size:"XL",  price:750,  status:"available"},
+  {id:33, name:"Ivory Mustard Kalamkari",  img:"images/white_kalamkari.jpg",     size:"L",   price:750,  status:"sold"},
+  {id:34, name:"Ivory Mustard Kalamkari",  img:"images/white_kalamkari.jpg",     size:"XXL", price:750,  status:"available"},
+  {id:35, name:"Ivory Dark Kalamkari",     img:"images/white_kalamkari1.jpg",    size:"XXL", price:750,  status:"available"},
+  {id:36, name:"Ivory Paisley Kalamkari",  img:"images/white_kalamkari2.jpg",    size:"L",   price:750,  status:"available"},
+  {id:37, name:"Ivory Paisley Kalamkari",  img:"images/white_kalamkari2.jpg",    size:"XL",  price:750,  status:"sold"},
+  {id:38, name:"Ivory Paisley Kalamkari",  img:"images/white_kalamkari2.jpg",    size:"XXL", price:750,  status:"available"},
+  {id:39, name:"Cream Red Elephant",       img:"images/white_red_elephant.jpg",  size:"M",   price:750,  status:"available"},
+  {id:40, name:"Cream Red Elephant",       img:"images/white_red_elephant.jpg",  size:"L",   price:750,  status:"available"},
+  {id:41, name:"Cream Red Elephant",       img:"images/white_red_elephant.jpg",  size:"L",   price:750,  status:"available"},
+  {id:42, name:"Golden Patchwork",         img:"images/yellow_elegance.jpg",     size:"L",   price:900,  status:"sold"},
+  {id:43, name:"Golden Patchwork",         img:"images/yellow_elegance.jpg",     size:"M",   price:900,  status:"available"},
+  {id:44, name:"Golden Patchwork",         img:"images/yellow_elegance.jpg",     size:"S",   price:900,  status:"available"},
+  {id:45, name:"Plum Gold Backknot",       img:"images/purple_backknot.jpg",     size:"XL",  price:850,  status:"sold"},
+  {id:46, name:"Rust Gold Charm",          img:"images/rust_gold.jpg",           size:"XL",  price:900,  status:"sold"},
+  {id:47, name:"Maroon Buddha Print",      img:"images/maroon_buddha.jpg",       size:"S",   price:550,  status:"sold"},
+  {id:48, name:"Charcoal Elephant Walk",   img:"images/charcoal_elephant.jpg",   size:"L",   price:550,  status:"sold"},
+  {id:49, name:"Maroon Elephant Mural",    img:"images/maroon_mural.jpg",        size:"L",   price:550,  status:"sold"},
+  {id:50, name:"Peach Elephant Joy",       img:"images/peach_elephant.jpg",      size:"L",   price:900,  status:"sold"}
+];
+
+let products = JSON.parse(localStorage.getItem('raga_products') || 'null') || INITIAL_PRODUCTS;
+let cart = [];
+let currentFilter = 'all';
+let adminMode = false;
+
+function saveProducts(){ localStorage.setItem('raga_products', JSON.stringify(products)); }
+
+function setFilter(f, btn){
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGrid();
+}
+
+function sizeLabel(s){ return {S:'36"',M:'38"',L:'40"',XL:'42"',XXL:'44"'}[s]||s; }
+
+function renderGrid(){
+  const grid = document.getElementById('product-grid');
+  let items = products;
+  if(currentFilter==='available') items=items.filter(p=>p.status==='available');
+  else if(currentFilter==='sold') items=items.filter(p=>p.status==='sold');
+  else if(currentFilter==='booked') items=items.filter(p=>p.status==='booked');
+  else if(['550','750','850','900','950'].includes(currentFilter)) items=items.filter(p=>p.price===parseInt(currentFilter));
+  if(!items.length){grid.innerHTML='<div class="empty-msg">No kurtis found for this filter.</div>';return;}
+  grid.innerHTML = items.map(p=>{
+    const isSold=p.status==='sold', isBooked=p.status==='booked', isUnavail=isSold||isBooked;
+    return `<div class="card${isSold?' is-sold':''}${isBooked?' is-booked':''}">
+      <img class="card-img" src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.background='#f0e8d8'">
+      ${isSold?'<div class="status-overlay"><div class="status-badge badge-sold">SOLD</div></div>':''}
+      ${isBooked?'<div class="status-overlay"><div class="status-badge badge-booked">BOOKED</div></div>':''}
+      <div class="card-body">
+        <div class="card-name" title="${p.name}">${p.name}</div>
+        <div class="card-price">₹${p.price}</div>
+        <div class="card-size">Size: ${p.size} (${sizeLabel(p.size)})</div>
+        ${!isUnavail
+          ?`<button class="add-btn" id="btn-${p.id}" onclick="addToCart(${p.id})">Add to Cart</button>`
+          :`<button class="add-btn" disabled>${isSold?'Sold Out':'Booked'}</button>`}
+        <div class="admin-card-btns">
+          <button class="acb acb-sold${isSold?' active-status':''}" onclick="setStatus(${p.id},'sold')">Sold</button>
+          <button class="acb acb-booked${isBooked?' active-status':''}" onclick="setStatus(${p.id},'booked')">Booked</button>
+          <button class="acb acb-avail" onclick="setStatus(${p.id},'available')">✓ Avail</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setStatus(id, status){
+  if(!adminMode) return;
+  const p=products.find(x=>x.id===id);
+  if(p){p.status=status;saveProducts();renderGrid();}
+}
+
+function addToCart(id){
+  const p=products.find(x=>x.id===id);
+  if(!p||p.status!=='available') return;
+  const ex=cart.find(c=>c.id===id);
+  if(ex) ex.qty++;
+  else cart.push({...p,qty:1});
+  updateCartBar();
+  const btn=document.getElementById('btn-'+id);
+  if(btn){btn.textContent='Added ✓';btn.style.background='#4a7c3f';setTimeout(()=>{btn.textContent='Add to Cart';btn.style.background='';},1200);}
+}
+
+function updateCartBar(){
+  const total=cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const count=cart.reduce((s,c)=>s+c.qty,0);
+  document.getElementById('cart-count').textContent=count;
+  document.getElementById('cart-total-bar').textContent='₹'+total;
+  document.getElementById('cart-bar').style.display=cart.length?'flex':'none';
+}
+
+function openModal(view){
+  document.getElementById('modal-backdrop').classList.add('open');
+  if(view==='admin-login') renderAdminLogin();
+  else if(view==='admin-panel') renderAdminPanel();
+  else if(view==='add-product') renderAddProduct();
+  else if(view==='cart') renderCartModal();
+  else if(view==='checkout') renderCheckoutModal();
+  else if(view==='success') renderSuccessModal();
+  else if(view==='size') renderSizeGuide();
+}
+function closeModal(){document.getElementById('modal-backdrop').classList.remove('open');}
+function backdropClick(e){if(e.target===document.getElementById('modal-backdrop'))closeModal();}
+
+function renderAdminLogin(){
+  document.getElementById('modal-content').innerHTML=`
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-title">🔐 Admin Login</div>
+    <div class="form-group"><label>Password</label>
+      <input type="password" id="admin-pw" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')checkAdmin()">
+    </div>
+    <button class="primary-btn" onclick="checkAdmin()">Login</button>
+    <div id="admin-err" style="color:#b91c1c;font-size:12px;margin-top:8px;text-align:center"></div>`;
+  setTimeout(()=>document.getElementById('admin-pw')?.focus(),100);
+}
+
+function checkAdmin(){
+  if(document.getElementById('admin-pw').value==='Raga2124'){
+    adminMode=true;
+    document.getElementById('admin-banner').classList.add('show');
+    document.getElementById('product-grid').classList.add('admin-mode');
+    renderGrid();
+    openModal('admin-panel');
+  } else {
+    document.getElementById('admin-err').textContent='Incorrect password. Please try again.';
+  }
+}
+
+function renderAdminPanel(){
+  const avail=products.filter(p=>p.status==='available').length;
+  const sold=products.filter(p=>p.status==='sold').length;
+  const booked=products.filter(p=>p.status==='booked').length;
+  document.getElementById('modal-content').innerHTML=`
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-title">⚙️ Admin Panel</div>
+    <div class="admin-panel-section">
+      <h4>📊 Inventory Summary</h4>
+      <div class="tag-row">
+        <span class="tag tag-avail">✅ Available: ${avail}</span>
+        <span class="tag tag-booked">📋 Booked: ${booked}</span>
+        <span class="tag tag-sold">❌ Sold: ${sold}</span>
+      </div>
+      <div style="font-size:12px;color:#666">Total listings: ${products.length}</div>
+    </div>
+    <div class="admin-panel-section">
+      <h4>📝 How to Update Status</h4>
+      <p style="font-size:12px;color:#555;line-height:1.6">Close this panel — each product card now shows <strong>Sold</strong>, <strong>Booked</strong> and <strong>✓ Avail</strong> buttons. Tap any to update instantly. Changes are saved automatically.</p>
+    </div>
+    <button class="primary-btn" style="background:#1a4fa0" onclick="openModal('add-product')">＋ Add New Product</button>
+    <button class="primary-btn" style="background:#c0392b;margin-top:8px" onclick="resetToDefault()">🔄 Reset to Default Data</button>
+    <button class="primary-btn" style="background:#555;margin-top:8px" onclick="logoutAdmin()">Logout</button>`;
+}
+
+function resetToDefault(){
+  if(confirm('Reset all product data to original? This will undo all status changes.')){
+    products=[...INITIAL_PRODUCTS];
+    saveProducts();
+    renderGrid();
+    openModal('admin-panel');
+  }
+}
+
+function logoutAdmin(){
+  adminMode=false;
+  document.getElementById('admin-banner').classList.remove('show');
+  document.getElementById('product-grid').classList.remove('admin-mode');
+  renderGrid();
+  closeModal();
+}
+
+function renderAddProduct(){
+  document.getElementById('modal-content').innerHTML=`
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <button class="back-btn" onclick="openModal('admin-panel')">← Back</button>
+    <div class="modal-title">➕ Add New Product</div>
+    <div class="form-group"><label>Product Name *</label><input type="text" id="np-name" placeholder="e.g. Indigo Floral Kurti"></div>
+    <div class="form-group"><label>Size *</label>
+      <select id="np-size">
+        <option value="">Select size</option>
+        <option value="S">S – 36"</option>
+        <option value="M">M – 38"</option>
+        <option value="L">L – 40"</option>
+        <option value="XL">XL – 42"</option>
+        <option value="XXL">XXL – 44"</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Price (₹) *</label><input type="number" id="np-price" placeholder="e.g. 750" min="1"></div>
+    <div class="form-group"><label>Status</label>
+      <select id="np-status">
+        <option value="available">Available</option>
+        <option value="booked">Booked</option>
+        <option value="sold">Sold</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Product Image *</label>
+      <input type="file" id="np-img" accept="image/*" onchange="previewImg()">
+      <img id="np-preview" class="img-preview">
+    </div>
+    <div id="np-err" style="font-size:12px;margin-bottom:6px"></div>
+    <button class="primary-btn" onclick="addProduct()">✅ Add Product</button>`;
+}
+
+function previewImg(){
+  const file=document.getElementById('np-img').files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const p=document.getElementById('np-preview');
+    p.src=e.target.result;p.style.display='block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function addProduct(){
+  const name=document.getElementById('np-name').value.trim();
+  const size=document.getElementById('np-size').value;
+  const price=parseInt(document.getElementById('np-price').value);
+  const status=document.getElementById('np-status').value;
+  const file=document.getElementById('np-img').files[0];
+  const errEl=document.getElementById('np-err');
+  if(!name||!size||!price||!file){errEl.style.color='#b91c1c';errEl.textContent='Please fill all fields and upload an image.';return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const newId=Math.max(...products.map(p=>p.id))+1;
+    products.push({id:newId,name,img:e.target.result,size,price,status});
+    saveProducts();renderGrid();
+    errEl.style.color='#2e7d32';errEl.textContent='✅ Product added!';
+    setTimeout(()=>openModal('admin-panel'),1000);
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderSizeGuide(){
+  document.getElementById('modal-content').innerHTML=`
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-title">📐 Size Guide</div>
+    <p style="font-size:13px;color:#888;margin-bottom:6px">Chest measurements in inches.</p>
+    <table class="size-table">
+      <thead><tr><th>Size</th><th>Chest</th><th>Best For</th></tr></thead>
+      <tbody>
+        <tr><td><b>S</b></td><td>36"</td><td>Small frame</td></tr>
+        <tr><td><b>M</b></td><td>38"</td><td>Medium frame</td></tr>
+        <tr><td><b>L</b></td><td>40"</td><td>Large frame</td></tr>
+        <tr><td><b>XL</b></td><td>42"</td><td>Extra large</td></tr>
+        <tr><td><b>XXL</b></td><td>44"</td><td>Double extra large</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px;color:#b8860b;margin-top:12px">💡 Between sizes? Size up for comfort.</p>`;
+}
+
+function renderCartModal(){
+  const total=cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const count=cart.reduce((s,c)=>s+c.qty,0);
+  if(!cart.length){
+    document.getElementById('modal-content').innerHTML=`
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <div class="modal-title">Your Cart</div>
+      <div class="empty-msg">🛒 Your cart is empty.</div>`;
+    return;
+  }
+  document.getElementById('modal-content').innerHTML=`
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-title">Your Cart <span class="count-badge">${count}</span></div>
+    ${cart.map(c=>`
+      <div class="cart-item">
+        <div>
+          <div class="cart-item-name">${c.name}</div>
+          <div class="cart-item-meta">Size: ${c.size} (${sizeLabel(c.size)}) · Qty: ${c.qty}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:5px">
+          <span class="cart-item-price">₹${c.price*c.qty}</span>
+          <button class="remove-btn" onclick="removeFromCart(${c.id})">×</button>
+        </div>
+      </div>`).join('')}
+    <div class="cart-total-row"><span>Total</span><span style="color:#b8860b;font-family:'Playfair Display',serif;font-size:18px">₹${total}</span></div>
+    <button class="primary-btn" onclick="openModal('checkout')">Proceed to Checkout →</button>`;
+}
+
+function removeFromCart(id){cart=cart.filter(c=>c.id!==id);updateCartBar();renderCartModal();}
+
+function renderCheckoutModal(){
+  const total=cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const count=cart.reduce((s,c)=>s+c.qty,0);
+  document.getElementById('modal-content').innerHTML=`
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <button class="back-btn" onclick="openModal('cart')">← Back to Cart</button>
+    <div class="modal-title">Place Your Order</div>
+    <div class="order-summary">${count} item${count>1?'s':''} · Total: <strong style="color:#b8860b;font-size:16px">₹${total}</strong></div>
+    <div class="form-group"><label>Full Name *</label><input type="text" id="f-name" placeholder="Your full name"></div>
+    <div class="form-group"><label>Phone Number *</label><input type="tel" id="f-phone" placeholder="+91 XXXXX XXXXX"></div>
+    <div class="form-group"><label>Email (optional)</label><input type="email" id="f-email" placeholder="you@email.com"></div>
+    <div class="form-group"><label>Delivery Address *</label><textarea id="f-addr" placeholder="Door no., Street, City, Pincode"></textarea></div>
+    <button class="primary-btn" onclick="placeOrder()">✉ Confirm &amp; Send via WhatsApp</button>`;
+}
+
+function placeOrder(){
+  const name=document.getElementById('f-name').value.trim();
+  const phone=document.getElementById('f-phone').value.trim();
+  const addr=document.getElementById('f-addr').value.trim();
+  if(!name||!phone||!addr){alert('Please fill in Name, Phone and Address.');return;}
+  const total=cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const lines=cart.map(c=>`• ${c.name} | Size: ${c.size} (${sizeLabel(c.size)}) | Qty: ${c.qty} | ₹${c.price*c.qty}`).join('\n');
+  const msg=`Hello RAGAS Studio! 🙏 I would like to place an order.\n\n*Customer Details*\nName: ${name}\nPhone: ${phone}\nAddress: ${addr}\n\n*Order Items:*\n${lines}\n\n*Grand Total: ₹${total}*\n\nPlease confirm. Thank you!`;
+  window.open('https://wa.me/qr/4LWEJGYTQZ7UH1?text='+encodeURIComponent(msg),'_blank');
+  cart=[];updateCartBar();openModal('success');
+}
+
+function renderSuccessModal(){
+  document.getElementById('modal-content').innerHTML=`
+    <div class="success-box">
+      <div class="success-icon">🎉</div>
+      <h3>Order Sent!</h3>
+      <p>Your order has been shared with RAGAS Studio on WhatsApp.<br>They will confirm and arrange delivery shortly.</p>
+      <button class="wa-btn" onclick="closeModal()">Continue Shopping</button>
+    </div>`;
+}
+
+renderGrid();
+</script>
+</body>
+</html>
