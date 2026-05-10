@@ -14,11 +14,11 @@ body{font-family:'DM Sans',sans-serif;background:#f7f2ea;min-height:100vh}
 .admin-gear:hover{opacity:1}
 .admin-banner{display:none;background:linear-gradient(90deg,#1a4fa0,#0d2d6b);color:#fff;text-align:center;padding:7px;font-size:12px;letter-spacing:1px}
 .admin-banner.show{display:block}
-.toolbar{display:flex;gap:7px;padding:0.75rem 1rem;flex-wrap:wrap;align-items:center;background:#fff;border-bottom:1px solid #e8dcc8;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.toolbar{display:flex;gap:7px;padding:0.75rem 1rem;flex-wrap:wrap;align-items:center;background:#fff;border-bottom:1px solid #e8dcc8;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
 .filter-label{font-size:11px;color:#888;letter-spacing:1px;text-transform:uppercase;margin-right:3px;white-space:nowrap}
 .filter-btn{font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 12px;border:1px solid #d4b896;border-radius:20px;background:transparent;cursor:pointer;color:#7a5a30;transition:all 0.2s;white-space:nowrap}
 .filter-btn.active,.filter-btn:hover{background:#b8860b;color:#fff;border-color:#b8860b}
-.sg-btn{margin-left:auto;font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 13px;border:1px solid #b8860b;border-radius:20px;background:transparent;cursor:pointer;color:#b8860b;transition:all 0.2s;white-space:nowrap}
+.sg-btn{margin-left:auto;font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 13px;border:1px solid #b8860b;border-radius:20px;background:transparent;cursor:pointer;color:#b8860b;transition:all 0.2s}
 .sg-btn:hover{background:#b8860b;color:#fff}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:14px;padding:1.1rem}
 .card{background:#fff;border:1px solid #e8dcc8;border-radius:12px;overflow:hidden;position:relative;transition:transform 0.18s,box-shadow 0.18s}
@@ -27,7 +27,7 @@ body{font-family:'DM Sans',sans-serif;background:#f7f2ea;min-height:100vh}
 .status-overlay{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
 .is-sold .status-overlay{background:rgba(20,12,4,0.52)}
 .is-booked .status-overlay{background:rgba(20,60,120,0.45)}
-.status-badge{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;letter-spacing:3px;padding:7px 18px;border-radius:4px;transform:rotate(-10deg);box-shadow:0 3px 12px rgba(0,0,0,0.45)}
+.status-badge{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;letter-spacing:3px;padding:7px 18px;border-radius:4px;transform:rotate(-10deg);box-shadow:0 3px 12px rgba(0,0,0,0.2)}
 .badge-sold{background:#b91c1c;color:#fff}
 .badge-booked{background:#1a4fa0;color:#fff}
 .card-body{padding:9px 11px 12px}
@@ -46,7 +46,7 @@ body{font-family:'DM Sans',sans-serif;background:#f7f2ea;min-height:100vh}
 .acb-booked:hover,.acb-booked.active-status{background:#1a4fa0;color:#fff}
 .acb-avail{background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7}
 .acb-avail:hover{background:#2e7d32;color:#fff}
-.cart-bar{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,#1a1208,#3b2a0e);color:#f5e6c8;padding:11px 1.2rem;display:none;align-items:center;justify-content:space-between;z-index:100;border-top:1px solid rgba(200,164,90,0.3)}
+.cart-bar{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,#1a1208,#3b2a0e);color:#f5e6c8;padding:11px 1.2rem;display:none;align-items:center;justify-content:space-between;z-index:100}
 .cart-bar-info{font-size:12px;color:#c8a45a}
 .cart-bar-info span{font-family:'Playfair Display',serif;font-size:15px;color:#f5e6c8}
 .cart-open-btn{font-size:11.5px;padding:7px 18px;border:1px solid #c8a45a;border-radius:20px;background:transparent;color:#c8a45a;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
@@ -58,7 +58,7 @@ body{font-family:'DM Sans',sans-serif;background:#f7f2ea;min-height:100vh}
 .modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:24px;cursor:pointer;color:#999;line-height:1}
 .form-group{margin-bottom:11px}
 .form-group label{display:block;font-size:12px;color:#7a5a30;margin-bottom:3px;font-weight:500}
-.form-group input,.form-group textarea,.form-group select{width:100%;padding:8px 10px;border:1px solid #e0d0b8;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;color:#2a1a08;background:#faf6ef;outline:none;transition:border-color 0.2s}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:8px 10px;border:1px solid #e0d0b8;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;color:#2a1a08;background:#fdfbf7}
 .form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:#b8860b}
 .form-group textarea{height:68px;resize:none}
 .primary-btn{width:100%;margin-top:10px;padding:12px;background:#b8860b;color:#fff;border:none;border-radius:8px;font-size:13.5px;font-family:'DM Sans',sans-serif;cursor:pointer;letter-spacing:0.5px;transition:background 0.2s}
@@ -78,8 +78,8 @@ body{font-family:'DM Sans',sans-serif;background:#f7f2ea;min-height:100vh}
 .success-icon{font-size:46px;margin-bottom:1rem}
 .success-box h3{font-family:'Playfair Display',serif;font-size:21px;margin-bottom:8px;color:#2a1a08}
 .success-box p{font-size:13px;color:#888;line-height:1.6}
-.wa-btn{display:inline-block;margin-top:1.1rem;padding:10px 26px;background:#25d366;color:#fff;border-radius:22px;font-size:13px;text-decoration:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500}
-.count-badge{background:#c8a45a;color:#1a1208;font-size:9.5px;font-weight:700;border-radius:50%;width:17px;height:17px;display:inline-flex;align-items:center;justify-content:center;margin-left:5px;vertical-align:middle}
+.wa-btn{display:inline-block;margin-top:1.1rem;padding:10px 26px;background:#25d366;color:#fff;border-radius:22px;font-size:13px;text-decoration:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+.count-badge{background:#c8a45a;color:#1a1208;font-size:9.5px;font-weight:700;border-radius:50%;width:17px;height:17px;display:inline-flex;align-items:center;justify-content:center;margin-left:5px}
 .empty-msg{text-align:center;padding:2.5rem 1rem;color:#a08060;font-size:14px}
 .page-bottom{height:80px}
 .order-summary{background:#faf6ef;border-radius:8px;padding:9px 11px;margin-bottom:12px;font-size:13px;color:#7a5a30}
@@ -312,7 +312,7 @@ function renderAdminPanel(){
     </div>
     <div class="admin-panel-section">
       <h4>📝 How to Update Status</h4>
-      <p style="font-size:12px;color:#555;line-height:1.6">Close this panel — each product card now shows <strong>Sold</strong>, <strong>Booked</strong> and <strong>✓ Avail</strong> buttons. Tap any to update instantly. Changes are saved automatically.</p>
+      <p style="font-size:12px;color:#555;line-height:1.6">Close this panel — each product card now shows <strong>Sold</strong>, <strong>Booked</strong> and <strong>✓ Avail</strong> buttons. Click any to update inventory instantly.</p>
     </div>
     <button class="primary-btn" style="background:#1a4fa0" onclick="openModal('add-product')">＋ Add New Product</button>
     <button class="primary-btn" style="background:#c0392b;margin-top:8px" onclick="resetToDefault()">🔄 Reset to Default Data</button>
@@ -458,19 +458,32 @@ function renderCheckoutModal(){
     <div class="form-group"><label>Phone Number *</label><input type="tel" id="f-phone" placeholder="+91 XXXXX XXXXX"></div>
     <div class="form-group"><label>Email (optional)</label><input type="email" id="f-email" placeholder="you@email.com"></div>
     <div class="form-group"><label>Delivery Address *</label><textarea id="f-addr" placeholder="Door no., Street, City, Pincode"></textarea></div>
-    <button class="primary-btn" onclick="placeOrder()">✉ Confirm &amp; Send via WhatsApp</button>`;
+    <button class="primary-btn" onclick="placeOrder()">✉ Confirm & Send via WhatsApp</button>`;
 }
 
 function placeOrder(){
   const name=document.getElementById('f-name').value.trim();
   const phone=document.getElementById('f-phone').value.trim();
+  const email=document.getElementById('f-email').value.trim();
   const addr=document.getElementById('f-addr').value.trim();
   if(!name||!phone||!addr){alert('Please fill in Name, Phone and Address.');return;}
+  
   const total=cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const count=cart.reduce((s,c)=>s+c.qty,0);
+  
+  // Build order items list
   const lines=cart.map(c=>`• ${c.name} | Size: ${c.size} (${sizeLabel(c.size)}) | Qty: ${c.qty} | ₹${c.price*c.qty}`).join('\n');
-  const msg=`Hello RAGAS Studio! 🙏 I would like to place an order.\n\n*Customer Details*\nName: ${name}\nPhone: ${phone}\nAddress: ${addr}\n\n*Order Items:*\n${lines}\n\n*Grand Total: ₹${total}*\n\nPlease confirm. Thank you!`;
-  window.open('https://wa.me/qr/4LWEJGYTQZ7UH1?text='+encodeURIComponent(msg),'_blank');
-  cart=[];updateCartBar();openModal('success');
+  
+  // Build complete message with all details
+  const msg=`🎉 *Order from RAGAS Studio* 🎉\n\n*Customer Details:*\nName: ${name}\nPhone: ${phone}\n${email ? `Email: ${email}\n` : ''}Address: ${addr}\n\n*📦 Order Items (${count}):*\n${lines}\n\n*💰 Order Summary:*\nTotal Amount: ₹${total}\n\nThank you for choosing RAGAS Studio! 🙏`;
+  
+  // Replace your WhatsApp number here (include country code, e.g., 919876543210 for India)
+  const whatsappNumber = '919876543210';
+  window.open('https://wa.me/'+whatsappNumber+'?text='+encodeURIComponent(msg),'_blank');
+  
+  cart=[];
+  updateCartBar();
+  openModal('success');
 }
 
 function renderSuccessModal(){
